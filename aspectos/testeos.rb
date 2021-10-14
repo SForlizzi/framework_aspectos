@@ -100,7 +100,7 @@ a = A.new
 
 bloque = proc { puts " funciona " }
 
-transformacion_prueba = Transformacion_log.new("before", B.instance_method(:saludar), &bloque)
+transformacion_prueba = Transformacion_log.new("instead_of", B.instance_method(:saludar), &bloque)
 
 a.class.send(:define_method, :saludar, transformacion_prueba.transformar)
 

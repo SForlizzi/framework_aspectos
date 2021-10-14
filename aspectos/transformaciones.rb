@@ -73,21 +73,24 @@ class Transformacion_log
       if clave_temporal == "before"
          redefinir_metodo = proc {
             |params|
-            bloque_a_agregar.call
+            yield
             metodo_original.call(params)
          }
       elsif clave_temporal == "after"
          redefinir_metodo = proc {
             |params|
             metodo_original.call(params)
-            bloque_a_agregar.call
+            yield
          }
       elsif clave_temporal == "instead_of"
          redefinir_metodo = proc {
-            bloque_a_agregar.call
+            yield
          }
       end
       # Esta no devuelve el metodo, sino el proc
+      redefinir_metodo do 
+         bloque_a_agregar.call
+      end
       redefinir_metodo
    end
 
