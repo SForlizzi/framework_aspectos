@@ -1,90 +1,8 @@
-Notas:
-- A las clases de tipo metodo se puede hacer un to_proc
-
-# Este test confirma que se puede hacer un instance eval en si mismo
-class T_eval
-
-   def transformar()
-         @redefinir_metodo = proc {
-            def zzz
-               puts "hola"
-            end
-         }
-         instance_eval(&@redefinir_metodo)
-
-   end
-
-end
-
-teval = T_eval.new
-teval.transformar
-
-
-
-# Este test confirma que se puede hacer un instance eval en si mismo
-class T_eval2
-
-   def transformar()
-      @parametros = "asd"
-      @definir_metodo = proc {
-         |x|
-         def zzz x
-            puts x
-         end
-      }
-
-     @redefinir_metodo = proc {
-        @definir_metodo.call(@parametros)
-     }
-
-      instance_eval(&@redefinir_metodo)
-
-   end
-
-end
-
-teval2 = T_eval2.new
-teval2.transformar
-teval2.zzz
-
-
-# Este test confirma que se puede hacer un instance eval en si mismo
-class T_eval3
-
-   def transformar()
-
-      @parametros = "ejemplo_parametro"
-
-      @metodo_a_inyectar = proc {
-         |args|
-         def zzz args
-            puts args
-         end
-      }
-
-      redefinir_metodo = proc {
-         @metodo_a_inyectar.call(@parametros)
-      }
-
-      # ver como cambiar lo del self.
-      instance_eval(&redefinir_metodo)
-
-   end
-
-end
-
-t_eval3 = T_eval3.new
-t_eval3.transformar
-t_eval3.zzz "ola de mars"
-
-
-
-
 ___________________________________________
 
 Test de Transformacion_iny
 
-Test no funciona
+No funciona
 
 
 class MiClase
@@ -127,7 +45,7 @@ ___________________________________________
 
 Test de Transformacion_red
 
-Esto funciona
+Funciona
 
 class A
   def saludar(x)
@@ -163,6 +81,8 @@ ___________________________________________
 
 Test de Transformacion_log
 
+No funciona, problema del proc
+
 class A
   def saludar(x)
     "Hola, " + x
@@ -184,58 +104,3 @@ transformacion_prueba = Transformacion_log.new("before", B.instance_method(:salu
 
 a.class.send(:define_method, :saludar, transformacion_prueba.transformar)
 
-
-
-___________________________________________
-Esto funciona
-
-class A
-
-end
-
-a = proc {
-   define_method :fuego do
-      puts "fuego"
-   end
-}
-
-A.instance_eval(&a)
-A.fuego
-___________________________________________
-
-Esto funciona
-
-class Person
-
-end
-
-class Developer < Person
-end
-
-persona = Person.new
-code = proc { |greetings| puts greetings; puts self }
-
-persona.instance_exec 'Good morning', &code
-
-___________________________________________
-
-Esto funciona tambien
-
-
-class A
-
-end
-
-unBloque = proc {
-   |var|
-   define_method :pruebita do
-      puts var
-   end
-}
-
-var_test = A.new
-
-var_test.instance_exec 'Good morning', &code
-
-A.new.prueba
-___________________________________________
